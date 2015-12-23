@@ -25,7 +25,7 @@
   <distributionManagement>
     <repository>
       <id>bintray</id>
-      <url>http://api.bintray.com/codefinger/boinc/boinc-maven-plugin</url>
+      <url>http://api.bintray.com/maven/codefinger/boinc/boinc-maven-plugin</url>
     </repository>
   </distributionManagement>
 
