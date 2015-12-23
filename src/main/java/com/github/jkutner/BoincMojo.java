@@ -14,8 +14,8 @@ import java.util.Map;
 
 /**
  *
- * @goal install
- * @execute phase="install"
+ * @goal package
+ * @execute phase="package"
  * @requiresDependencyResolution
  */
 public class BoincMojo extends AbstractMojo {
