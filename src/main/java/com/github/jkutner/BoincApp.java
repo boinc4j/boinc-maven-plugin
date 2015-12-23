@@ -64,14 +64,16 @@ public class BoincApp {
   }
 
   public void cleanBoincDir(Boolean keepWrapper) throws IOException {
-    if (keepWrapper) {
-      for (File f : FileUtils.listFiles(this.boincDir, new WrapperFilter(), TrueFileFilter.INSTANCE)) {
-        if (!f.isDirectory()) {
-          FileUtils.forceDelete(f);
+    if (this.boincDir.exists()) {
+      if (keepWrapper) {
+        for (File f : FileUtils.listFiles(this.boincDir, new WrapperFilter(), TrueFileFilter.INSTANCE)) {
+          if (!f.isDirectory()) {
+            FileUtils.forceDelete(f);
+          }
         }
+      } else {
+        FileUtils.deleteDirectory(this.boincDir);
       }
-    } else {
-      FileUtils.deleteDirectory(this.boincDir);
     }
   }
 
