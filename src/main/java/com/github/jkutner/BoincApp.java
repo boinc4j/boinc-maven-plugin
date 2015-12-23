@@ -155,9 +155,9 @@ public class BoincApp {
       File physicalFile = files.get(logicalName);
       Directives fileXml = version.add("file")
         .add("physical_name").set(physicalFile.getName()).up()
-        .add("copy_file").set("true").up();
+        .add("copy_file").up();
       if (logicalName.equals("wrapper")) {
-        fileXml.add("main_program").set("true").up();
+        fileXml.add("main_program").up();
       } else {
         fileXml.add("logical_name").set(logicalName).up();
       }
