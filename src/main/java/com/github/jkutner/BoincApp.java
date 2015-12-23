@@ -98,7 +98,7 @@ public class BoincApp {
     File templatesDir = new File(boincDir, "templates");
     FileUtils.copyDirectory(this.srcTemplatesDir, templatesDir);
 
-    File downloadsDir = new File(boincDir, "downloads");
+    File downloadsDir = new File(boincDir, "download");
     FileUtils.forceMkdir(downloadsDir);
 
     File uberjar = new File(downloadsDir, this.srcUberjar.getName());
@@ -129,25 +129,21 @@ public class BoincApp {
     String wrapperZipFilename = wrapperName(platform)+".zip";
     File wrapperZipFile = new File(platformDir, wrapperZipFilename);
 
-    if (wrapperZipFile.exists()) {
-      // TODO check md5
-//      FileUtils.forceDelete(wrapperZipFile);
-      System.out.println("Using existing " + wrapperZipFile + "...");
-    } else {
-      System.out.println("Downloading " + wrapperZipFilename + "...");
+    System.out.println("Downloading " + wrapperZipFilename + "...");
 
-      String urlString = System.getProperty(
-          "boinc.wrapper." + platform + ".url",
-          "http://boinc.berkeley.edu/dl/" + wrapperZipFilename);
-      URL wrapperUrl = new URL(urlString);
+    String urlString = System.getProperty(
+        "boinc.wrapper." + platform + ".url",
+        "http://boinc.berkeley.edu/dl/" + wrapperZipFilename);
+    URL wrapperUrl = new URL(urlString);
 
-      // TODO make better
-      FileUtils.copyURLToFile(wrapperUrl, wrapperZipFile);
-    }
+    // TODO make better
+    FileUtils.copyURLToFile(wrapperUrl, wrapperZipFile);
 
     System.out.println("Extracting " + wrapperZipFilename + "...");
     ZipFile zipFile = new ZipFile(wrapperZipFile);
     zipFile.extractAll(platformDir.toString());
+
+    FileUtils.forceDelete(wrapperZipFile);
 
     return new File(platformDir, wrapperName(platform)+wrapperExtension(platform));
   }
