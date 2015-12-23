@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  *
- * @goal boinc
+ * @goal install
  * @execute phase="install"
  * @requiresDependencyResolution
  */

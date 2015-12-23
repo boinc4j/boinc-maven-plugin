@@ -124,8 +124,6 @@ public class BoincApp {
   }
 
   protected File installWrapper(File platformDir, String platform) throws IOException, ZipException {
-    File wrapperFile = new File(platformDir, wrapperName(platform)+"_"+wrapperExtension(platform));
-
     String wrapperZipFilename = wrapperName(platform)+".zip";
     File wrapperZipFile = new File(platformDir, wrapperZipFilename);
 
@@ -149,7 +147,7 @@ public class BoincApp {
     ZipFile zipFile = new ZipFile(wrapperZipFile);
     zipFile.extractAll(platformDir.toString());
 
-    return wrapperFile;
+    return new File(platformDir, wrapperName(platform)+wrapperExtension(platform));
   }
 
   protected void createVersionFile(File platformDir, Map<String,File> files)
