@@ -101,14 +101,14 @@ public class BoincApp {
     File downloadsDir = new File(boincDir, "download");
     FileUtils.forceMkdir(downloadsDir);
 
-    File uberjar = new File(downloadsDir, this.srcUberjar.getName());
-    FileUtils.copyFile(this.srcUberjar, uberjar);
-
     for (String p : platforms) {
       Map<String,File> files = new HashMap<String, File>();
 
       File platformDir = new File(appDir, p);
       FileUtils.forceMkdir(platformDir);
+
+      File uberjar = new File(platformDir, this.srcUberjar.getName());
+      FileUtils.copyFile(this.srcUberjar, uberjar);
 
       files.put(uberjar.getName(), uberjar);
       files.put("job.xml", copyJobXml(platformDir, p));
