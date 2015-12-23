@@ -13,10 +13,7 @@ import org.xembly.Xembler;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class BoincApp {
 
@@ -60,7 +57,7 @@ public class BoincApp {
     this.srcUberjar = uberjar;
     this.srcJobXml = jobXml;
     this.srcTemplatesDir = templatesDir;
-    this.versionKey = versionKey;
+    this.versionKey = versionKey == null ? UUID.randomUUID().toString() : versionKey;
   }
 
   public void cleanBoincDir(Boolean keepWrapper) throws IOException {
@@ -98,8 +95,8 @@ public class BoincApp {
     File templatesDir = new File(boincDir, "templates");
     FileUtils.copyDirectory(this.srcTemplatesDir, templatesDir);
 
-    File downloadsDir = new File(boincDir, "download");
-    FileUtils.forceMkdir(downloadsDir);
+    //File downloadsDir = new File(boincDir, "download");
+    //FileUtils.forceMkdir(downloadsDir);
 
     for (String p : platforms) {
       Map<String,File> files = new HashMap<String, File>();
@@ -107,7 +104,9 @@ public class BoincApp {
       File platformDir = new File(appDir, p);
       FileUtils.forceMkdir(platformDir);
 
-      File uberjar = new File(platformDir, this.srcUberjar.getName());
+      File uberjar = new File(
+          platformDir,
+          FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar");
       FileUtils.copyFile(this.srcUberjar, uberjar);
 
       files.put(uberjar.getName(), uberjar);
