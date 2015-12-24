@@ -109,7 +109,7 @@ public class BoincApp {
           FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar");
       FileUtils.copyFile(this.srcUberjar, uberjar);
 
-      files.put(uberjar.getName(), uberjar);
+      files.put(this.srcUberjar.getName(), uberjar);
       files.put("job.xml", copyJobXml(platformDir, p));
       files.put("wrapper", installWrapper(platformDir, p));
       createVersionFile(platformDir, files);
@@ -154,8 +154,8 @@ public class BoincApp {
     for (String logicalName : files.keySet()) {
       File physicalFile = files.get(logicalName);
       Directives fileXml = version.add("file")
-        .add("physical_name").set(physicalFile.getName()).up()
-        .add("copy_file").up();
+          .add("physical_name").set(physicalFile.getName()).up()
+          .add("copy_file").up();
       if (logicalName.equals("wrapper")) {
         fileXml.add("main_program").up();
       } else {
