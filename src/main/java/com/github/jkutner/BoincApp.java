@@ -96,8 +96,10 @@ public class BoincApp {
     File appDir = new File(boincDir, "app");
     FileUtils.forceMkdir(appDir);
 
-    File templatesDir = new File(boincDir, "templates");
-    FileUtils.copyDirectory(this.srcTemplatesDir, templatesDir);
+    if (this.srcTemplatesDir.exists()) {
+      File templatesDir = new File(boincDir, "templates");
+      FileUtils.copyDirectory(this.srcTemplatesDir, templatesDir);
+    }
 
     //File downloadsDir = new File(boincDir, "download");
     //FileUtils.forceMkdir(downloadsDir);
