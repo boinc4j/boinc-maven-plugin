@@ -1,0 +1,17 @@
+
+<input_template>
+  <file_info>
+    <number>0</number>
+    <url>https://dl.dropboxusercontent.com/u/1935391/</url>
+    <md5_cksum>14758f1afd44c09b7992073ccf00b43d</md5_cksum>
+    <nbytes>7</nbytes>
+  </file_info>
+  <workunit>
+    <file_ref>
+      <file_number>0</file_number>
+      <open_name>in.txt</open_name>
+    </file_ref>
+    <rsc_fpops_bound>1e12</rsc_fpops_bound>
+    <rsc_fpops_est>1e14</rsc_fpops_est>
+  </workunit>
+</input_template>

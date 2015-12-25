@@ -40,12 +40,15 @@ public class BoincApp {
 
   private String versionKey;
 
+  private File targetDir;
+
   public BoincApp(
       File uberjar,
       Map<String,Boolean> altPlatforms,
       File jobXml,
       File templatesDir,
-      String versionKey
+      String versionKey,
+      File targetDir
   ) {
     platforms = new HashSet<String>();
     for (String p : altPlatforms.keySet())
@@ -58,6 +61,7 @@ public class BoincApp {
     this.srcJobXml = jobXml;
     this.srcTemplatesDir = templatesDir;
     this.versionKey = versionKey == null ? UUID.randomUUID().toString() : versionKey;
+    this.targetDir = targetDir;
   }
 
   public void cleanBoincDir(Boolean keepWrapper) throws IOException {
@@ -109,40 +113,49 @@ public class BoincApp {
           FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar");
       FileUtils.copyFile(this.srcUberjar, uberjar);
 
-      files.put(this.srcUberjar.getName(), uberjar);
-      files.put("job.xml", copyJobXml(platformDir, p));
+      String uberjarName = this.srcUberjar.getName();
+      files.put(uberjarName, uberjar);
+      files.put("job.xml", copyJobXml(platformDir, p, uberjarName));
       files.put("wrapper", installWrapper(platformDir, p));
       createVersionFile(platformDir, files);
       createComposerJson();
     }
   }
 
-  protected File copyJobXml(File platformDir, String platform) throws IOException {
+  protected File copyJobXml(File platformDir, String platform, String uberjarName)
+      throws ImpossibleModificationException, IOException {
+    String xml = new Xembler(new Directives().add("job_desc")
+        .add("task")
+        .add("application").set(getJavaCmd(platform)).up()
+        .add("command_line").set("-jar " + uberjarName)
+    ).xml();
+
     String jobFilename = "job_"+platform+"_"+this.versionKey+".xml";
     File jobFile = new File(platformDir, jobFilename);
-    FileUtils.copyFile(this.srcJobXml, jobFile);
+    FileUtils.writeStringToFile(jobFile, xml);
     return jobFile;
   }
 
   protected File installWrapper(File platformDir, String platform) throws IOException, ZipException {
-    String wrapperZipFilename = wrapperName(platform)+".zip";
-    File wrapperZipFile = new File(platformDir, wrapperZipFilename);
+    String wrapperZipFilename = wrapperName(platform) + ".zip";
+    File wrapperZipFile = new File(this.targetDir, wrapperZipFilename);
 
-    System.out.println("Downloading " + wrapperZipFilename + "...");
+    if (wrapperZipFile.exists()) {
+      System.out.println("Using cached " + wrapperZipFilename + "...");
+    } else {
+      System.out.println("Downloading " + wrapperZipFilename + "...");
 
-    String urlString = System.getProperty(
-        "boinc.wrapper." + platform + ".url",
-        "http://boinc.berkeley.edu/dl/" + wrapperZipFilename);
-    URL wrapperUrl = new URL(urlString);
+      String urlString = System.getProperty(
+          "boinc.wrapper." + platform + ".url",
+          "http://boinc.berkeley.edu/dl/" + wrapperZipFilename);
+      URL wrapperUrl = new URL(urlString);
 
-    // TODO make better
-    FileUtils.copyURLToFile(wrapperUrl, wrapperZipFile);
+      FileUtils.copyURLToFile(wrapperUrl, wrapperZipFile);
+    }
 
     System.out.println("Extracting " + wrapperZipFilename + "...");
     ZipFile zipFile = new ZipFile(wrapperZipFile);
     zipFile.extractAll(platformDir.toString());
-
-    FileUtils.forceDelete(wrapperZipFile);
 
     return new File(platformDir, wrapperName(platform)+wrapperExtension(platform));
   }
@@ -190,5 +203,9 @@ public class BoincApp {
     if (platform.startsWith("windows_"))
       return ".exe";
     return "";
+  }
+
+  protected String getJavaCmd(String platform) {
+    return "/usr/bin/java";
   }
 }

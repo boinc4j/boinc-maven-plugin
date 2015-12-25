@@ -88,8 +88,7 @@ public class BoincMojo extends AbstractMojo {
   protected File uberjar = null;
 
   public void execute() throws MojoExecutionException, MojoFailureException {
-
-    // create an uberjar
+    File targetDir = new File(mavenProject.getBasedir(), "target");
 
     if (jobFile == null) jobFile = new File(mavenProject.getBasedir(), "src/main/resources/boinc/app/job.xml");
     if (templatesDir == null) templatesDir = new File(mavenProject.getBasedir(), "src/main/resources/boinc/templates");
@@ -99,7 +98,7 @@ public class BoincMojo extends AbstractMojo {
 //      if (!"war".equals(mavenProject.getPackaging())) {
 //        throw new MojoExecutionException("Your packaging must be set to 'jar' or you must define the '<uberjar>' config!");
 //      } else {
-        File targetDir = new File(mavenProject.getBasedir(), "target");
+
 
         File[] files = targetDir.listFiles(new FilenameFilter() {
           public boolean accept(File dir, String name) {
@@ -123,7 +122,8 @@ public class BoincMojo extends AbstractMojo {
         altPlatforms,
         jobFile,
         templatesDir,
-        versionKey
+        versionKey,
+        targetDir
     );
 
     try {

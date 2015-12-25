@@ -1,0 +1,6 @@
+<job_desc>
+    <task>
+        <application>/usr/bin/java</application>
+        <command_line>-jar java-at-home-1.2-SNAPSHOT-jar-with-dependencies.jar</command_line>
+    </task>
+</job_desc>
