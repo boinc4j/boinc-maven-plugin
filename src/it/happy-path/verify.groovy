@@ -2,6 +2,9 @@ import org.codehaus.plexus.util.FileUtils;
 
 assert (new File("${basedir}/boinc").isDirectory())
 assert (new File("${basedir}/boinc", "app").isDirectory())
+assert (new File("${basedir}/boinc", "templates").isDirectory())
+assert (new File("${basedir}/boinc/templates", "app_in").exists())
+assert (new File("${basedir}/boinc/templates", "app_out").exists())
 
 def defaultPlatforms = [
     "x86_64-apple-darwin",
