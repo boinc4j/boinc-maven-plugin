@@ -3,7 +3,7 @@
 
   <groupId>com.github.jkutner</groupId>
   <artifactId>boinc-maven-plugin</artifactId>
-  <version>0.1.12-SNAPSHOT</version>
+  <version>0.1.12</version>
   <modelVersion>4.0.0</modelVersion>
 
   <packaging>maven-plugin</packaging>
@@ -19,7 +19,7 @@
     <connection>scm:git:git://github.com/jkutner/boinc-maven-plugin.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jkutner/boinc-maven-plugin.git</developerConnection>
     <url>http://github.com/jkutner/boinc-maven-plugin</url>
-    <tag>HEAD</tag>
+    <tag>boinc-maven-plugin-0.1.12</tag>
   </scm>
 
   <distributionManagement>
