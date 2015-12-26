@@ -114,7 +114,7 @@ public class BoincApp {
     String uberjarPhysicalName = FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar";
 
     // if there is an assimilator?
-    createAssimilatorScript(binDir, uberjarName);
+    createAssimilatorScript(binDir, uberjarPhysicalName);
 
     for (String p : platforms) {
       Map<String,File> files = new HashMap<String, File>();
