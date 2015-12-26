@@ -111,6 +111,7 @@ public class BoincApp {
     //FileUtils.forceMkdir(downloadsDir);
 
     String uberjarName = this.srcUberjar.getName();
+    String uberjarPhysicalName = FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar";
 
     // if there is an assimilator?
     createAssimilatorScript(binDir, uberjarName);
@@ -121,9 +122,7 @@ public class BoincApp {
       File platformDir = new File(appDir, p);
       FileUtils.forceMkdir(platformDir);
 
-      File uberjar = new File(
-          platformDir,
-          FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar");
+      File uberjar = new File(platformDir, uberjarPhysicalName);
       FileUtils.copyFile(this.srcUberjar, uberjar);
 
       files.put(uberjarName, uberjar);
