@@ -10,8 +10,7 @@ import org.xembly.Directives;
 import org.xembly.ImpossibleModificationException;
 import org.xembly.Xembler;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -42,13 +41,16 @@ public class BoincApp {
 
   private File targetDir;
 
+  private String assimilatorClass;
+
   public BoincApp(
       File uberjar,
       Map<String,Boolean> altPlatforms,
       File jobXml,
       File templatesDir,
       String versionKey,
-      File targetDir
+      File targetDir,
+      String assimilatorClass
   ) {
     platforms = new HashSet<String>();
     for (String p : altPlatforms.keySet())
@@ -62,6 +64,7 @@ public class BoincApp {
     this.srcTemplatesDir = templatesDir;
     this.versionKey = versionKey == null ? UUID.randomUUID().toString() : versionKey;
     this.targetDir = targetDir;
+    this.assimilatorClass = assimilatorClass == null ? "Assimilator" : assimilatorClass;
   }
 
   public void cleanBoincDir(Boolean keepWrapper) throws IOException {
@@ -96,6 +99,9 @@ public class BoincApp {
     File appDir = new File(boincDir, "app");
     FileUtils.forceMkdir(appDir);
 
+    File binDir = new File(boincDir, "bin");
+    FileUtils.forceMkdir(binDir);
+
     if (this.srcTemplatesDir.exists()) {
       File templatesDir = new File(boincDir, "templates");
       FileUtils.copyDirectory(this.srcTemplatesDir, templatesDir);
@@ -103,6 +109,11 @@ public class BoincApp {
 
     //File downloadsDir = new File(boincDir, "download");
     //FileUtils.forceMkdir(downloadsDir);
+
+    String uberjarName = this.srcUberjar.getName();
+
+    // if there is an assimilator?
+    createAssimilatorScript(binDir, uberjarName);
 
     for (String p : platforms) {
       Map<String,File> files = new HashMap<String, File>();
@@ -115,12 +126,30 @@ public class BoincApp {
           FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar");
       FileUtils.copyFile(this.srcUberjar, uberjar);
 
-      String uberjarName = this.srcUberjar.getName();
       files.put(uberjarName, uberjar);
       files.put("job.xml", copyJobXml(platformDir, p, uberjarName));
       files.put("wrapper", installWrapper(platformDir, p));
       createVersionFile(platformDir, files);
       createComposerJson();
+    }
+  }
+
+  protected void createAssimilatorScript(File binDir, String uberjarName) throws IOException {
+    File scriptFile = new File(binDir, "java_assimilator");
+    //BufferedWriter out = null;
+    try (
+      InputStream is = getClass().getResourceAsStream( "/java_assimilator.sh");
+      BufferedReader br = new BufferedReader(new InputStreamReader(is));
+      FileWriter fw = new FileWriter(scriptFile);
+      BufferedWriter out = new BufferedWriter(fw);
+    ) {
+      String line;
+      while ((line = br.readLine()) != null) {
+        line = line.replace("%uberjar_name%", uberjarName);
+        line = line.replace("%assimilator_class%", this.assimilatorClass);
+        out.write(line);
+        out.write("\n");
+      }
     }
   }
 

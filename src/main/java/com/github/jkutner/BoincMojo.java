@@ -123,7 +123,8 @@ public class BoincMojo extends AbstractMojo {
         jobFile,
         templatesDir,
         versionKey,
-        targetDir
+        targetDir,
+        null
     );
 
     try {
