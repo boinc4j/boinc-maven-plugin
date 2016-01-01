@@ -157,7 +157,8 @@ public class BoincApp {
     String xml = new Xembler(new Directives().add("job_desc")
         .add("task")
         .add("application").set(getJavaCmd(platform)).up()
-        .add("command_line").set("-jar " + uberjarName)
+        .add("command_line").set("-jar " + uberjarName).up()
+        .add("append_cmdline_args")
     ).xml();
 
     String jobFilename = "job_"+platform+"_"+this.versionKey+".xml";
