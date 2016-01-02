@@ -10,8 +10,8 @@ assert (new File("${basedir}/boinc", "bin").isDirectory())
 assert (new File("${basedir}/boinc/bin", "java_assimilator").exists())
 
 def javaAssimilator = FileUtils.fileRead("${basedir}/boinc/bin/java_assimilator")
-assert javaAssimilator.contains("java -cp /app/boinc-project/download/helloworld-1.0-SNAPSHOT-jar-with-dependencies")
-assert javaAssimilator.contains(".jar Assimilator \$@")
+assert javaAssimilator.contains("java -Dboinc.assimilator.class=com.github.jkutner.boinc.BoincAssimilator -cp /app/boinc-project/download/helloworld-1.0-SNAPSHOT-jar-with-dependencies")
+assert javaAssimilator.contains(".jar com.github.jkutner.boinc.BoincAssimilator \$@")
 
 def defaultPlatforms = [
     "x86_64-apple-darwin",

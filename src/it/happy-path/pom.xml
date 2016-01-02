@@ -56,6 +56,7 @@
         <version>@project.version@</version>
         <configuration>
           <uberjar>${project.build.directory}/${project.build.finalName}-jar-with-dependencies.jar</uberjar>
+          <assimilatorClass>com.github.jkutner.boinc.BoincAssimilator</assimilatorClass>
         </configuration>
         <executions>
           <execution>

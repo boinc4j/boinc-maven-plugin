@@ -1,5 +1,6 @@
 package com.github.jkutner;
 
+import com.github.jkutner.boinc.BoincAssimilator;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
@@ -64,7 +65,7 @@ public class BoincApp {
     this.srcTemplatesDir = templatesDir;
     this.versionKey = versionKey == null ? UUID.randomUUID().toString() : versionKey;
     this.targetDir = targetDir;
-    this.assimilatorClass = assimilatorClass == null ? "Assimilator" : assimilatorClass;
+    this.assimilatorClass = assimilatorClass;
   }
 
   public void cleanBoincDir(Boolean keepWrapper) throws IOException {
@@ -113,8 +114,7 @@ public class BoincApp {
     String uberjarName = this.srcUberjar.getName();
     String uberjarPhysicalName = FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar";
 
-    // if there is an assimilator?
-    createAssimilatorScript(binDir, uberjarPhysicalName);
+    writeDaemonsXml(binDir, uberjarPhysicalName);
 
     for (String p : platforms) {
       Map<String,File> files = new HashMap<String, File>();
@@ -133,23 +133,45 @@ public class BoincApp {
     }
   }
 
-  protected void createAssimilatorScript(File binDir, String uberjarName) throws IOException {
+  protected void createAssimilatorScript(File binDir, String uberjarPhysicalName) throws IOException {
     File scriptFile = new File(binDir, "java_assimilator");
-    //BufferedWriter out = null;
     try (
-      InputStream is = getClass().getResourceAsStream( "/java_assimilator.sh");
-      BufferedReader br = new BufferedReader(new InputStreamReader(is));
-      FileWriter fw = new FileWriter(scriptFile);
-      BufferedWriter out = new BufferedWriter(fw);
+        InputStream is = getClass().getResourceAsStream("/java_assimilator.sh");
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        FileWriter fw = new FileWriter(scriptFile);
+        BufferedWriter out = new BufferedWriter(fw);
     ) {
       String line;
       while ((line = br.readLine()) != null) {
-        line = line.replace("%uberjar_name%", uberjarName);
+        line = line.replace("%uberjar_name%", uberjarPhysicalName);
+        line = line.replace("%java_opts%", BoincAssimilator.buildJavaOpts(this.assimilatorClass));
         line = line.replace("%assimilator_class%", this.assimilatorClass);
         out.write(line);
         out.write("\n");
       }
     }
+  }
+
+  protected void writeDaemonsXml(File binDir, String uberjarPhysicalName) throws ImpossibleModificationException, IOException {
+    File daemonsFile = new File(boincDir, "daemons.xml");
+    Directives directives = new Directives().add("daemons")
+        .add("daemon").add("cmd").set("feeder -d 3").up().up()
+        .add("daemon").add("cmd").set("transitioner -d 3").up().up()
+        .add("daemon").add("cmd").set("file_deleter -d 2 --preserve_wu_files --preserve_result_file").up().up();
+
+    directives.add("daemon").add("cmd").set("sample_trivial_validator -d 2 --app ${HEROKU_APP_NAME}").up().up();
+
+    if (this.assimilatorClass != null) {
+      directives.add("daemon").add("cmd").set("script_assimilator --script java_assimilator -d 2 --app ${HEROKU_APP_NAME}").up().up();
+      createAssimilatorScript(binDir, uberjarPhysicalName);
+    } else {
+      directives.add("daemon").add("cmd").set("sample_assimilator -d 2  --app ${HEROKU_APP_NAME}").up().up();
+    }
+
+    String xml = new Xembler(directives).xml();
+    String xmlWithoutHeader = xml.substring(xml.indexOf('\n')+1);
+
+    FileUtils.writeStringToFile(daemonsFile, xmlWithoutHeader);
   }
 
   protected File copyJobXml(File platformDir, String platform, String uberjarName)

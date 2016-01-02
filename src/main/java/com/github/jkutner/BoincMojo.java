@@ -81,6 +81,13 @@ public class BoincMojo extends AbstractMojo {
   protected String versionKey = null;
 
   /**
+   * The classname of the Java-based assimilator to be run by the script_assimilator
+   *
+   * @parameter property="boinc.assimilatorClass"
+   */
+  protected String assimilatorClass = null;
+
+  /**
    * A standalone JAR file containing your app and all of it's dependencies
    *
    * @parameter property="boinc.uberjar"
@@ -124,7 +131,7 @@ public class BoincMojo extends AbstractMojo {
         templatesDir,
         versionKey,
         targetDir,
-        null
+        assimilatorClass
     );
 
     try {
