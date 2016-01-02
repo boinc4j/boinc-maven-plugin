@@ -157,7 +157,7 @@ public class BoincApp {
     Directives directives = new Directives().add("daemons")
         .add("daemon").add("cmd").set("feeder -d 3").up().up()
         .add("daemon").add("cmd").set("transitioner -d 3").up().up()
-        .add("daemon").add("cmd").set("file_deleter -d 2 --preserve_wu_files --preserve_result_file").up().up();
+        .add("daemon").add("cmd").set("file_deleter -d 2 --preserve_wu_files --preserve_result_files").up().up();
 
     directives.add("daemon").add("cmd").set("sample_trivial_validator -d 2 --app ${HEROKU_APP_NAME}").up().up();
 
