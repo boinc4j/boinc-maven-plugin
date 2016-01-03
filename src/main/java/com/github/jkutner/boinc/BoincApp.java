@@ -1,4 +1,4 @@
-package com.github.jkutner;
+package com.github.jkutner.boinc;
 
 import com.github.jkutner.boinc.BoincAssimilator;
 import net.lingala.zip4j.core.ZipFile;
