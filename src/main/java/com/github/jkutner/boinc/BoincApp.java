@@ -1,6 +1,5 @@
 package com.github.jkutner.boinc;
 
-import com.github.jkutner.boinc.BoincAssimilator;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.commons.io.FileUtils;
@@ -17,7 +16,9 @@ import java.util.*;
 
 public class BoincApp {
 
-  public static final String DEFAULT_WRAPPER_VERSION="26016";
+  public static final String DEFAULT_WRAPPER_VERSION="26014";
+
+  public static final String MJAVA_VERSION="v0.1";
 
   private static String[] defaultPlatforms = new String[] {
       "x86_64-apple-darwin",
@@ -96,20 +97,9 @@ public class BoincApp {
     cleanBoincDir(true);
 
     FileUtils.forceMkdir(boincDir);
-
-    File appDir = new File(boincDir, "app");
-    FileUtils.forceMkdir(appDir);
-
-    File binDir = new File(boincDir, "bin");
-    FileUtils.forceMkdir(binDir);
-
-    if (this.srcTemplatesDir.exists()) {
-      File templatesDir = new File(boincDir, "templates");
-      FileUtils.copyDirectory(this.srcTemplatesDir, templatesDir);
-    }
-
-    //File downloadsDir = new File(boincDir, "download");
-    //FileUtils.forceMkdir(downloadsDir);
+    File appDir = initDir("app");
+    File binDir = initDir("bin");
+    copyDir("templates");
 
     String uberjarName = this.srcUberjar.getName();
     String uberjarPhysicalName = FilenameUtils.getBaseName(this.srcUberjar.getName())+"_"+this.versionKey+".jar";
@@ -128,8 +118,22 @@ public class BoincApp {
       files.put(uberjarName, uberjar);
       files.put("job.xml", copyJobXml(platformDir, p, uberjarName));
       files.put("wrapper", installWrapper(platformDir, p));
+      files.put(getJavaCmd(p), installMJava(platformDir, p));
       createVersionFile(platformDir, files);
       createComposerJson();
+    }
+  }
+
+  protected File initDir(String dirName) throws IOException {
+    File dir = new File(boincDir, dirName);
+    FileUtils.forceMkdir(dir);
+    return dir;
+  }
+
+  protected void copyDir(String dir) throws IOException {
+    if (this.srcTemplatesDir.exists()) {
+      File templatesDir = new File(boincDir, dir);
+      FileUtils.copyDirectory(this.srcTemplatesDir, templatesDir);
     }
   }
 
@@ -249,7 +253,7 @@ public class BoincApp {
   protected String wrapperVersion(String platform) {
     if (platform.startsWith("windows_"))
       return "26016";
-    return "26014";
+    return DEFAULT_WRAPPER_VERSION;
   }
 
   protected String wrapperExtension(String platform) {
@@ -259,6 +263,31 @@ public class BoincApp {
   }
 
   protected String getJavaCmd(String platform) {
-    return "/usr/bin/java";
+    if (platform.startsWith("windows_"))
+      return "mjava.exe";
+    return "mjava";
+  }
+
+  protected File installMJava(File platformDir, String platform) throws IOException, ZipException {
+    String zipFilename = "mjava_" + platform + ".zip";
+    String url = "https://github.com/jkutner/mjava/releases/download/"+MJAVA_VERSION+"/"+zipFilename;
+    installZipFile(platformDir, zipFilename, url);
+    return new File(platformDir, getJavaCmd(platform));
+  }
+
+  protected void installZipFile(File platformDir, String zipFilename, String urlString) throws IOException, ZipException {
+    File zipFile = new File(this.targetDir, zipFilename);
+
+    if (zipFile.exists()) {
+      System.out.println("Using cached " + zipFilename + "...");
+    } else {
+      System.out.println("Downloading " + zipFilename + "...");
+      URL wrapperUrl = new URL(urlString);
+      FileUtils.copyURLToFile(wrapperUrl, zipFile);
+    }
+
+    System.out.println("Extracting " + zipFilename + "...");
+    ZipFile zip = new ZipFile(zipFile);
+    zip.extractAll(platformDir.toString());
   }
 }

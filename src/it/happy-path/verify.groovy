@@ -28,6 +28,8 @@ for (platform in defaultPlatforms) {
     assert (new File("${basedir}/boinc/app/${platform}", "version.xml").exists())
     assert ((new File("${basedir}/boinc/app/${platform}", "wrapper_26014_${platform}").exists()) ||
             (new File("${basedir}/boinc/app/${platform}", "wrapper_26016_${platform}.exe").exists()))
+    assert ((new File("${basedir}/boinc/app/${platform}", "mjava").exists()) ||
+            (new File("${basedir}/boinc/app/${platform}", "mjava.exe").exists()))
 
     def versionXml = FileUtils.fileRead("${basedir}/boinc/app/${platform}/version.xml")
     assert versionXml.contains("<physical_name>helloworld-1.0-SNAPSHOT-jar-with-dependencies_");
@@ -43,7 +45,7 @@ for (platform in defaultPlatforms) {
             def jobXml = FileUtils.fileRead(file)
             assert jobXml.contains("<job_desc>")
             assert jobXml.contains("<task>")
-            assert jobXml.contains("<application>/usr/bin/java</application>")
+            assert jobXml.contains("<application>mjava")
             assert jobXml.contains("<command_line>-jar helloworld-1.0-SNAPSHOT-jar-with-dependencies.jar</command_line>")
             foundJobXml = true
         }
