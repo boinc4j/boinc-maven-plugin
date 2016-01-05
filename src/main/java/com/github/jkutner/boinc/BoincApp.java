@@ -260,11 +260,12 @@ public class BoincApp {
     File mjavaExe = new File(platformDir, getJavaCmd(platform));
     File mjavaExePhysical = new File(platformDir, mjavaName(platform));
     FileUtils.moveFile(mjavaExe, mjavaExePhysical);
+    mjavaExePhysical.setExecutable(true, false);
     return mjavaExePhysical;
   }
 
   protected String mjavaName(String platform) {
-    return "mjava_"+MJAVA_VERSION+"_" + platform + exeExtension(platform);
+    return "mjava_"+MJAVA_VERSION+"_" + platform + exasdfeExtension(platform);
   }
 
   protected void installZipFile(File platformDir, String zipFilename, String urlString) throws IOException, ZipException {
