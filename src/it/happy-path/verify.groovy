@@ -28,8 +28,8 @@ for (platform in defaultPlatforms) {
     assert (new File("${basedir}/boinc/app/${platform}", "version.xml").exists())
     assert ((new File("${basedir}/boinc/app/${platform}", "wrapper_26014_${platform}").exists()) ||
             (new File("${basedir}/boinc/app/${platform}", "wrapper_26016_${platform}.exe").exists()))
-    assert ((new File("${basedir}/boinc/app/${platform}", "mjava").exists()) ||
-            (new File("${basedir}/boinc/app/${platform}", "mjava.exe").exists()))
+    assert ((new File("${basedir}/boinc/app/${platform}", "mjava_v0.1_${platform}").exists()) ||
+            (new File("${basedir}/boinc/app/${platform}", "mjava_v0.1_${platform}.exe").exists()))
 
     def versionXml = FileUtils.fileRead("${basedir}/boinc/app/${platform}/version.xml")
     assert versionXml.contains("<physical_name>helloworld-1.0-SNAPSHOT-jar-with-dependencies_");

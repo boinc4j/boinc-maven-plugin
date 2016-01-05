@@ -195,26 +195,11 @@ public class BoincApp {
 
   protected File installWrapper(File platformDir, String platform) throws IOException, ZipException {
     String wrapperZipFilename = wrapperName(platform) + ".zip";
-    File wrapperZipFile = new File(this.targetDir, wrapperZipFilename);
-
-    if (wrapperZipFile.exists()) {
-      System.out.println("Using cached " + wrapperZipFilename + "...");
-    } else {
-      System.out.println("Downloading " + wrapperZipFilename + "...");
-
-      String urlString = System.getProperty(
-          "boinc.wrapper." + platform + ".url",
-          "http://boinc.berkeley.edu/dl/" + wrapperZipFilename);
-      URL wrapperUrl = new URL(urlString);
-
-      FileUtils.copyURLToFile(wrapperUrl, wrapperZipFile);
-    }
-
-    System.out.println("Extracting " + wrapperZipFilename + "...");
-    ZipFile zipFile = new ZipFile(wrapperZipFile);
-    zipFile.extractAll(platformDir.toString());
-
-    return new File(platformDir, wrapperName(platform)+wrapperExtension(platform));
+    String urlString = System.getProperty(
+        "boinc.wrapper." + platform + ".url",
+        "http://boinc.berkeley.edu/dl/" + wrapperZipFilename);
+    installZipFile(platformDir, wrapperZipFilename, urlString);
+    return new File(platformDir, wrapperName(platform)+exeExtension(platform));
   }
 
   protected void createVersionFile(File platformDir, Map<String,File> files)
@@ -256,7 +241,7 @@ public class BoincApp {
     return DEFAULT_WRAPPER_VERSION;
   }
 
-  protected String wrapperExtension(String platform) {
+  protected String exeExtension(String platform) {
     if (platform.startsWith("windows_"))
       return ".exe";
     return "";
@@ -272,7 +257,14 @@ public class BoincApp {
     String zipFilename = "mjava_" + platform + ".zip";
     String url = "https://github.com/jkutner/mjava/releases/download/"+MJAVA_VERSION+"/"+zipFilename;
     installZipFile(platformDir, zipFilename, url);
-    return new File(platformDir, getJavaCmd(platform));
+    File mjavaExe = new File(platformDir, getJavaCmd(platform));
+    File mjavaExePhysical = new File(platformDir, mjavaName(platform));
+    FileUtils.moveFile(mjavaExe, mjavaExePhysical);
+    return mjavaExePhysical;
+  }
+
+  protected String mjavaName(String platform) {
+    return "mjava_"+MJAVA_VERSION+"_" + platform + exeExtension(platform);
   }
 
   protected void installZipFile(File platformDir, String zipFilename, String urlString) throws IOException, ZipException {
