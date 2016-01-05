@@ -265,7 +265,7 @@ public class BoincApp {
   }
 
   protected String mjavaName(String platform) {
-    return "mjava_"+MJAVA_VERSION+"_" + platform + exasdfeExtension(platform);
+    return "mjava_"+MJAVA_VERSION+"_" + platform + exeExtension(platform);
   }
 
   protected void installZipFile(File platformDir, String zipFilename, String urlString) throws IOException, ZipException {
