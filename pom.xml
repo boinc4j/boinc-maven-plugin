@@ -51,6 +51,27 @@
     </developer>
   </developers>
 
+  <repositories>
+    <repository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>bintray-codefinger-boinc</id>
+      <name>bintray-plugins</name>
+      <url>http://dl.bintray.com/codefinger/boinc</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>bintray-codefinger-boinc</id>
+      <name>bintray-plugins</name>
+      <url>http://dl.bintray.com/codefinger/boinc</url>
+    </pluginRepository>
+  </pluginRepositories>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
