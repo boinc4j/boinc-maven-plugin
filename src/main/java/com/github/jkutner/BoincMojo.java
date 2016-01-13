@@ -1,6 +1,6 @@
 package com.github.jkutner;
 
-import com.github.jkutner.boinc.BoincApp;
+import org.boinc4j.BoincApp;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.BuildPluginManager;
