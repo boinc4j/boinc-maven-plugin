@@ -28,8 +28,8 @@ for (platform in defaultPlatforms) {
     assert (new File("${basedir}/boinc/app/${platform}", "version.xml").exists())
     assert ((new File("${basedir}/boinc/app/${platform}", "wrapper_26014_${platform}").exists()) ||
             (new File("${basedir}/boinc/app/${platform}", "wrapper_26016_${platform}.exe").exists()))
-    assert ((new File("${basedir}/boinc/app/${platform}", "mjava_v0.1_${platform}").exists()) ||
-            (new File("${basedir}/boinc/app/${platform}", "mjava_v0.1_${platform}.exe").exists()))
+    assert ((new File("${basedir}/boinc/app/${platform}", "mjava_v0.2_${platform}").exists()) ||
+            (new File("${basedir}/boinc/app/${platform}", "mjava_v0.2_${platform}.exe").exists()))
 
     def versionXml = FileUtils.fileRead("${basedir}/boinc/app/${platform}/version.xml")
     assert versionXml.contains("<physical_name>helloworld-1.0-SNAPSHOT-jar-with-dependencies_");
@@ -38,6 +38,8 @@ for (platform in defaultPlatforms) {
             versionXml.contains("<physical_name>wrapper_26016_"+platform+".exe</physical_name>"));
     assert versionXml.contains("<physical_name>job_"+platform+"_");
     assert versionXml.contains("<logical_name>job.xml</logical_name>");
+    assert versionXml.contains("<logical_name>jdk.zip</logical_name>");
+    assert versionXml.contains("<url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads");
 
     def foundJobXml = false
     for (file in (new File("${basedir}/boinc/app/${platform}").listFiles())) {
@@ -46,7 +48,8 @@ for (platform in defaultPlatforms) {
             assert jobXml.contains("<job_desc>")
             assert jobXml.contains("<task>")
             assert jobXml.contains("<application>mjava")
-            assert jobXml.contains("<command_line>-jar helloworld-1.0-SNAPSHOT-jar-with-dependencies.jar</command_line>")
+            assert jobXml.contains("<command_line>--mjava-zip=jdk.zip --mjava-home=openjdk-1.7.0-u80-unofficial-")
+            assert jobXml.contains("-jar helloworld-1.0-SNAPSHOT-jar-with-dependencies.jar</command_line>")
             foundJobXml = true
         }
     }
