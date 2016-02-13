@@ -39,7 +39,7 @@ for (platform in defaultPlatforms) {
     assert versionXml.contains("<physical_name>job_"+platform+"_");
     assert versionXml.contains("<logical_name>job.xml</logical_name>");
     assert versionXml.contains("<logical_name>jdk.zip</logical_name>");
-    assert versionXml.contains("<url>https://bitbucket.org/alexkasko/openjdk-unofficial-builds/downloads");
+    assert versionXml.contains("<url>https://s3.amazonaws.com/boinc4j/openjdk-1.7.0-u80-unofficial-");
 
     def foundJobXml = false
     for (file in (new File("${basedir}/boinc/app/${platform}").listFiles())) {
