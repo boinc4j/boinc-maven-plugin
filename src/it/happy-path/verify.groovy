@@ -15,7 +15,6 @@ assert javaAssimilator.contains(".jar com.github.jkutner.boinc.BoincAssimilator 
 
 def defaultPlatforms = [
     "x86_64-apple-darwin",
-    "i686-apple-darwin",
     "windows_intelx86",
     "windows_x86_64",
     "i686-pc-linux-gnu",
@@ -28,8 +27,8 @@ for (platform in defaultPlatforms) {
     assert (new File("${basedir}/boinc/app/${platform}", "version.xml").exists())
     assert ((new File("${basedir}/boinc/app/${platform}", "wrapper_26014_${platform}").exists()) ||
             (new File("${basedir}/boinc/app/${platform}", "wrapper_26016_${platform}.exe").exists()))
-    assert ((new File("${basedir}/boinc/app/${platform}", "mjava_v0.2_${platform}").exists()) ||
-            (new File("${basedir}/boinc/app/${platform}", "mjava_v0.2_${platform}.exe").exists()))
+    assert ((new File("${basedir}/boinc/app/${platform}", "mjava_v0.3_${platform}").exists()) ||
+            (new File("${basedir}/boinc/app/${platform}", "mjava_v0.3_${platform}.exe").exists()))
 
     def versionXml = FileUtils.fileRead("${basedir}/boinc/app/${platform}/version.xml")
     assert versionXml.contains("<physical_name>helloworld-1.0-SNAPSHOT-jar-with-dependencies_");
@@ -49,7 +48,7 @@ for (platform in defaultPlatforms) {
             assert jobXml.contains("<task>")
             assert jobXml.contains("<application>mjava")
             assert jobXml.contains("<command_line>--mjava-zip=jdk.zip --mjava-home=openjdk-1.7.0-u80-unofficial-")
-            assert jobXml.contains("-jar helloworld-1.0-SNAPSHOT-jar-with-dependencies.jar</command_line>")
+            assert jobXml.contains("-cp helloworld-1.0-SNAPSHOT-jar-with-dependencies.jar")
             foundJobXml = true
         }
     }

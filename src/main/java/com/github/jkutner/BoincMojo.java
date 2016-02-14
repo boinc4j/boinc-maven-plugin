@@ -82,6 +82,13 @@ public class BoincMojo extends AbstractMojo {
   protected String versionKey = null;
 
   /**
+   * The classname of the main class to be run by the BOINC client
+   *
+   * @parameter property="boinc.mainClass"
+   */
+  protected String mainClass = "Main";
+
+  /**
    * The classname of the Java-based assimilator to be run by the script_assimilator
    *
    * @parameter property="boinc.assimilatorClass"
@@ -127,6 +134,7 @@ public class BoincMojo extends AbstractMojo {
 
     BoincApp app = new BoincApp(
         uberjar,
+        mainClass,
         altPlatforms,
         jobFile,
         templatesDir,
