@@ -101,7 +101,7 @@
     <dependency>
       <groupId>org.boinc4j</groupId>
       <artifactId>boinc4j</artifactId>
-      <version>0.3.3</version>
+      <version>0.3.4</version>
     </dependency>
   </dependencies>
 
